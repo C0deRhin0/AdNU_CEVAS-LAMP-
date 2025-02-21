@@ -1,4 +1,4 @@
-# TrashTrackr
+# AdNU_CEVAS
 
 An institute-based certificate validation and collection. Implemented through LAMP Stack. Works by checking embedded cryptographic hash.
 
