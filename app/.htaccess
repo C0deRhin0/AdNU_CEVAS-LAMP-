@@ -1,0 +1,19 @@
+<FilesMatch "\.(php|inc)$">
+    Deny from all
+</FilesMatch>
+
+<Files "index.php">
+    Allow from all
+</Files>
+
+<Files "LogoutPHP.php">
+    Allow from all
+</Files>
+
+<Files "LoginPHP.php">
+    Allow from all
+</Files>
+
+<Files "SignupPHP.php">
+    Allow from all
+</Files>
