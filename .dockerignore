@@ -1,0 +1,26 @@
+# Version control
+.git
+.gitignore
+
+# macOS cruft
+.DS_Store
+
+# Local docs & tooling (not needed in image)
+README.md
+Makefile
+docker-compose.yaml
+
+# Host-only webserver configs
+nginx.conf
+apache2.conf
+
+# Local PHP config (you mount this at runtime)
+config.php
+
+# IDE settings
+.vscode/
+.idea/
+
+# Logs & temp files
+*.log
+tmp/

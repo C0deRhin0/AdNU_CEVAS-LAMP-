@@ -1,0 +1,82 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: c0derhin0/adnu-cevas-lamp:app
+    #fixed name has to be removed for replicas to work
+    #container_name: adnu_cevas_app
+
+    #new environment variable (prevents hard coding)
+    environment:
+      DB_HOST: db
+      DB_NAME: cevasdb
+      DB_USER: cevasuser
+      DB_PASS: rhino
+    depends_on:
+      db:
+        condition: service_healthy 
+
+    #exposed app interface
+    #ports:
+    #  - "8080:80"   
+
+    #all interface/service on the same network
+    networks:
+      - cevas-net
+    
+    #reverse mounting by sir jio
+    #volumes:
+    #  - ./:/var/www/html
+
+  db:
+    image: c0derhin0/adnu-cevas-lamp:db
+    #image: mariadb:10.6
+    container_name: adnu_cevas_db
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: cevasdb
+      MYSQL_USER: cevasuser
+      MYSQL_PASSWORD: rhino
+
+    #standard mounting
+    volumes:
+      - db_data:/var/lib/mysql
+
+    #healthcheck before composes the db
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    #all interface/service on the same network
+    networks:
+      - cevas-net
+
+  #new interface, web server
+  proxy:
+    image: c0derhin0/adnu-cevas-lamp:proxy
+    #image: nginx:latest
+    container_name: adnu_cevas_proxy
+    depends_on:
+      app:
+        condition: service_started
+      
+    #exposed nginx web server to serve the app and the db
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro. #read only
+
+    #all interface/service on the same network
+    networks:
+      - cevas-net
+
+networks:
+  cevas-net:
+  #network mode
+    driver: bridge
+
+volumes:
+  db_data:

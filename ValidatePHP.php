@@ -1,9 +1,8 @@
 <?php
-session_start();
-require 'db.php'; 
+require 'config.php';
+require 'db.php';
 
 //Check if user is logged in
-session_start();
 if (!isset($_SESSION['user_id'])) {
     header('Location: index.php');
     exit();
