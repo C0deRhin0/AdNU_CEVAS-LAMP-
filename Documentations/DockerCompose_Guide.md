@@ -95,10 +95,10 @@ docker run -d \
   --name mydb \
   --network mynetwork \
   -v mydbdata:/var/lib/mysql \
-  -e MYSQL_ROOT_PASSWORD=root \
-  -e MYSQL_DATABASE=cevasdb \
-  -e MYSQL_USER=cevasuser \
-  -e MYSQL_PASSWORD=rhino \
+  -e MYSQL_ROOT_PASSWORD=test \
+  -e MYSQL_DATABASE=testdb \
+  -e MYSQL_USER=testuser \
+  -e MYSQL_PASSWORD=test \
   mydb:latest
 ```
 
@@ -115,10 +115,10 @@ docker run -d \
 docker run -d \
   --name myapp \
   --network mynetwork \
-  -e DB_HOST=mydb \
-  -e DB_NAME=cevasdb \
-  -e DB_USER=cevasuser \
-  -e DB_PASS=rhino \
+  -e DB_HOST=testdb \
+  -e DB_NAME=testdb \
+  -e DB_USER=testuser \
+  -e DB_PASS=test \
   -p 8080:80 \
   myapp:latest
 ```
@@ -148,10 +148,10 @@ services:
     image: mydb:latest
     container_name: mydb
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: cevasdb
-      MYSQL_USER: cevasuser
-      MYSQL_PASSWORD: rhino
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: test
     volumes:
       - mydbdata:/var/lib/mysql
     networks:
@@ -161,9 +161,9 @@ services:
     container_name: myapp
     environment:
       DB_HOST: db
-      DB_NAME: cevasdb
-      DB_USER: cevasuser
-      DB_PASS: rhino
+      DB_NAME: testdb
+      DB_USER: testuser
+      DB_PASS: test
     ports:
       - "8080:80"
     depends_on:

@@ -68,21 +68,18 @@ rollout-status:
 top:
 	kubectl top pods -l app=app -l app=db -l app=proxy
 
-# Clean up everything including persistent volumes
-clean:
-	kubectl delete -f ./k8s/proxy-deployment.yaml -f ./k8s/app-deployment.yaml -f ./k8s/db-deployment.yaml
-	kubectl delete -f ./k8s/persistentvolume.yaml
-	kubectl delete -f ./k8s/configmap.yaml
-	kubectl delete -f ./k8s/secret.yaml
-
 # Force clean up persistent volumes (use when PV/PVC stuck in terminating)
 force-clean:
-	kubectl delete -f ./k8s/proxy-deployment.yaml -f ./k8s/app-deployment.yaml -f ./k8s/db-deployment.yaml
-	kubectl patch pv db-pv -p '{"metadata":{"finalizers":null}}' --type=merge
+	kubectl delete -f ./k8s/proxy-deployment.yaml -f ./k8s/app-deployment.yaml -f ./k8s/db-deployment.yaml 
+
 	kubectl patch pvc db-pvc -p '{"metadata":{"finalizers":null}}' --type=merge
-	kubectl delete -f ./k8s/persistentvolume.yaml --force --grace-period=0
-	kubectl delete -f ./k8s/configmap.yaml
-	kubectl delete -f ./k8s/secret.yaml
+	kubectl delete pvc db-pvc --grace-period=0 --force --ignore-not-found
+	kubectl patch pv db-pv -p '{"metadata":{"finalizers":null}}' --type=merge
+	kubectl delete pv db-pv --grace-period=0 --force --ignore-not-found
+
+	kubectl delete -f ./k8s/persistentvolume.yaml --ignore-not-found
+	kubectl delete -f ./k8s/configmap.yaml --ignore-not-found
+	kubectl delete -f ./k8s/secret.yaml --ignore-not-found
 
 # Quick restart (delete + deploy)
 restart: delete deploy
