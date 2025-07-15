@@ -1,5 +1,5 @@
-CREATE DATABASE adnu_cevas;
-USE adnu_cevas;
+CREATE DATABASE IF NOT EXISTS cevasdb;
+USE cevasdb;
 CREATE TABLE users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       full_name VARCHAR(255) NOT NULL,

@@ -1,0 +1,14 @@
+# Ignore local secrets
+k8s/secret.yaml
+docker-compose.yaml
+
+# Ignore user creation and RBAC challenge files
+k8s/regular-user.*
+k8s/csr-regular-user.yaml
+k8s/clusterrole-regular-user.yaml
+k8s/clusterrolebinding-regular-user.yaml
+k8s-rbac-auth-demo.md
+
+# Ignore other sensitive or local files
+*.bak
+.DS_Store 

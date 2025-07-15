@@ -1,0 +1,84 @@
+services:
+  app:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    image: c0derhin0/adnu-cevas-lamp:app
+    #fixed name has to be removed for replicas to work
+    #container_name: adnu_cevas_app
+
+    #new environment variable (prevents hard coding)
+    environment:
+      DB_HOST: db
+      DB_NAME: testdb
+      DB_USER: testuser
+      DB_PASS: test
+    depends_on:
+      db:
+        condition: service_healthy 
+
+    #exposed app interface
+    #ports:
+    #  - "8080:80"   
+
+    #all interface/service on the same network
+    networks:
+      - cevas-net
+    
+    #reverse mounting
+    #volumes:
+    #  - ./:/var/www/html
+
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    image: c0derhin0/adnu-cevas-lamp:db
+    #image: mariadb:10.6
+    container_name: adnu_cevas_db
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_DATABASE: testdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: test
+
+    #standard mounting
+    volumes:
+      - db_data:/var/lib/mysql
+
+    #healthcheck before composes the db
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+    #all interface/service on the same network
+    networks:
+      - cevas-net
+
+  #new interface, web server
+  proxy:
+    build:
+      context: ./proxy
+      dockerfile: Dockerfile
+    image: c0derhin0/adnu-cevas-lamp:proxy
+    #image: nginx:latest
+    container_name: adnu_cevas_proxy
+    depends_on:
+      app:
+        condition: service_started
+      
+    #exposed nginx web server to serve the app and the db
+    ports:
+      - "80:80"
+    networks:
+      - cevas-net
+
+networks:
+  cevas-net:
+  #network mode
+    driver: bridge
+
+volumes:
+  db_data:
