@@ -40,7 +40,7 @@ external-ip:
 
 # Port forward to services
 port-forward-app:
-	kubectl port-forward service/app-service 8080:80
+	kubectl port-forward service/app-service 9090:80
 port-forward-db:
 	kubectl port-forward service/db-service 3306:3306
 
